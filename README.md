@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# FlexForge — Client
 
-## Getting Started
+FlexForge is a comprehensive Fitness & Gym Management Platform built for fitness enthusiasts, gym trainers, and administrators. Users can discover and book fitness classes, participate in a community forum, and track their fitness journey. Trainers can manage their classes and share knowledge through forum posts. Administrators oversee the platform's users, classes, and content.
 
-First, run the development server:
+## Purpose
+
+This platform was built as a full-stack assignment project to demonstrate role-based access control, secure authentication, payment integration, and a complete CRUD-driven fitness management workflow.
+
+## Live URL
+
+https://your-live-url.vercel.app *(update after deployment)*
+
+## Key Features
+
+- Role-based dashboards for User, Trainer, and Admin with distinct permissions
+- Secure authentication using Better Auth (Credential + Google login) with JWT stored in HTTPOnly cookies
+- Browse, search (MongoDB `$regex`), and filter (MongoDB `$in`) fitness classes with server-side pagination
+- Stripe-powered class booking with duplicate booking prevention
+- Favorite classes with duplicate-entry prevention
+- Community Forum with posts, Like/Dislike voting, and threaded comments (edit/delete own comments)
+- Apply-as-Trainer workflow with Admin approval/rejection and feedback
+- Admin controls: manage users (block/unblock/promote), manage trainers, approve/reject classes, moderate forum posts, view transaction history
+- Soft-block enforcement — blocked users can browse but cannot perform state-changing actions
+- Trainer tools: add/update/delete classes, view enrolled students, publish forum posts
+- Fully responsive design across mobile, tablet, and desktop
+- Framer Motion animations on the homepage
+- Custom 404 page and global loading states
+
+## NPM Packages Used
+
+- next
+- react / react-dom
+- better-auth
+- mongodb
+- axios
+- framer-motion
+- react-hot-toast
+- lucide-react
+- @stripe/stripe-js
+- @stripe/react-stripe-js
+- tailwindcss / @tailwindcss/postcss
+
+## Setup
 
 ```bash
+npm install
+cp .env.example .env.local   # fill in your credentials
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

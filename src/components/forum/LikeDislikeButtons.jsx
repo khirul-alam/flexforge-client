@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRole } from '@/hooks/useRole';
+import { authFetch } from '@/utils/authFetch';
 
 export default function LikeDislikeButtons({ post }) {
   const { user } = useRole();
@@ -11,18 +12,21 @@ export default function LikeDislikeButtons({ post }) {
   const vote = async (voteType) => {
     if (!user) return;
 
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/forum/posts/${post._id}/vote`, {
+    await authFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/forum/posts/${post._id}/vote`, {
       method: 'PATCH',
-      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userEmail: user.email, voteType }),
     });
 
     if (voteType === 'like') {
-      setLikes((prev) => (prev.includes(user.email) ? prev.filter((e) => e !== user.email) : [...prev, user.email]));
+      setLikes((prev) =>
+        prev.includes(user.email) ? prev.filter((e) => e !== user.email) : [...prev, user.email]
+      );
       setDislikes((prev) => prev.filter((e) => e !== user.email));
     } else {
-      setDislikes((prev) => (prev.includes(user.email) ? prev.filter((e) => e !== user.email) : [...prev, user.email]));
+      setDislikes((prev) =>
+        prev.includes(user.email) ? prev.filter((e) => e !== user.email) : [...prev, user.email]
+      );
       setLikes((prev) => prev.filter((e) => e !== user.email));
     }
   };

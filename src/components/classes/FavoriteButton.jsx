@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRole } from '@/hooks/useRole';
+import { authFetch } from '@/utils/authFetch';
 import toast from 'react-hot-toast';
 
 export default function FavoriteButton({ classData }) {
@@ -11,9 +12,8 @@ export default function FavoriteButton({ classData }) {
   useEffect(() => {
     if (!user) return;
     const checkFavorite = async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/favorites/check?classId=${classData._id}&userEmail=${user.email}`,
-        { credentials: 'include' }
+      const res = await authFetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/favorites/check?classId=${classData._id}&userEmail=${user.email}`
       );
       const data = await res.json();
       setIsFavorited(data.data?.isFavorited);
@@ -22,9 +22,8 @@ export default function FavoriteButton({ classData }) {
   }, [user, classData._id]);
 
   const handleClick = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/favorites`, {
+    const res = await authFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/favorites`, {
       method: 'POST',
-      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         classId: classData._id,

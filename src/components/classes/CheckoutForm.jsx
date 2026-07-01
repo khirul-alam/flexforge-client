@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
+import { authFetch } from '@/utils/authFetch';
 import toast from 'react-hot-toast';
 
 export default function CheckoutForm({ classData, user, router }) {
@@ -27,10 +28,8 @@ export default function CheckoutForm({ classData, user, router }) {
     }
 
     if (paymentIntent?.status === 'succeeded') {
-      // 1. Save booking
-      const bookingRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/bookings`, {
+      const bookingRes = await authFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/bookings`, {
         method: 'POST',
-        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           classId: classData._id,
@@ -52,10 +51,8 @@ export default function CheckoutForm({ classData, user, router }) {
         return;
       }
 
-      // 2. Save transaction record
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/payments`, {
+      await authFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/payments`, {
         method: 'POST',
-        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userEmail: user.email,

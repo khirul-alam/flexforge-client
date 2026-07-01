@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRole } from '@/hooks/useRole';
+import { authFetch } from '@/utils/authFetch';
 import toast from 'react-hot-toast';
 
 export default function ApplyTrainerPage() {
@@ -16,23 +17,18 @@ export default function ApplyTrainerPage() {
 
     try {
       const form = e.target;
-      const experience = parseInt(form.experience.value);
-      const specialty = form.specialty.value;
-
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/trainer-applications`, {
+      const res = await authFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/trainer-applications`, {
         method: 'POST',
-        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userEmail: user.email,
           userName: user.name,
-          experience,
-          specialty,
+          experience: parseInt(form.experience.value),
+          specialty: form.specialty.value,
         }),
       });
 
       const data = await res.json();
-
       if (!data.success) {
         toast.error(data.message || 'Failed to submit application');
         return;
@@ -53,7 +49,6 @@ export default function ApplyTrainerPage() {
       <form onSubmit={handleSubmit} className="flex max-w-md flex-col gap-4 rounded-lg bg-white p-6 shadow">
         <label className="text-sm font-medium">Experience (years)</label>
         <input name="experience" type="number" min="0" className="rounded-lg border p-3" required />
-
         <label className="text-sm font-medium">Specialty</label>
         <select name="specialty" className="rounded-lg border p-3" required>
           <option value="">Select specialty</option>
@@ -63,7 +58,6 @@ export default function ApplyTrainerPage() {
           <option value="Pilates">Pilates</option>
           <option value="CrossFit">CrossFit</option>
         </select>
-
         <button
           type="submit"
           disabled={submitting}

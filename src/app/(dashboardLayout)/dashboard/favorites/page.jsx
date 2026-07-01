@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRole } from '@/hooks/useRole';
+import { authFetch } from '@/utils/authFetch';
 import toast from 'react-hot-toast';
 
 export default function FavoriteClassesPage() {
@@ -12,9 +13,8 @@ export default function FavoriteClassesPage() {
 
   const fetchFavorites = async () => {
     if (!user) return;
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/favorites/user/${user.email}`,
-      { credentials: 'include' }
+    const res = await authFetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/favorites/user/${user.email}`
     );
     const data = await res.json();
     setFavorites(data.data || []);
@@ -26,12 +26,10 @@ export default function FavoriteClassesPage() {
   }, [user]);
 
   const handleRemove = async (id) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/favorites/${id}`, {
+    const res = await authFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/favorites/${id}`, {
       method: 'DELETE',
-      credentials: 'include',
     });
     const data = await res.json();
-
     if (data.success) {
       toast.success('Removed from favorites');
       fetchFavorites();
@@ -53,11 +51,8 @@ export default function FavoriteClassesPage() {
               <h3 className="font-semibold">{fav.className}</h3>
               <p className="text-sm text-gray-500">Trainer: {fav.trainerName}</p>
               <p className="mt-1 font-bold text-orange-500">${fav.price}</p>
-
               <div className="mt-3 flex items-center justify-between">
-                <Link href={`/classes/${fav.classId}`} className="text-sm text-orange-500">
-                  View Details
-                </Link>
+                <Link href={`/classes/${fav.classId}`} className="text-sm text-orange-500">View Details</Link>
                 <button
                   onClick={() => handleRemove(fav._id)}
                   className="rounded-lg bg-red-500 px-3 py-1 text-xs text-white"

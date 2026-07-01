@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRole } from '@/hooks/useRole';
+import { authFetch } from '@/utils/authFetch';
 import toast from 'react-hot-toast';
 
 export default function MyForumPostsPage() {
@@ -11,34 +12,24 @@ export default function MyForumPostsPage() {
 
   const fetchPosts = async () => {
     if (!user) return;
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/forum/posts/author/${user.email}`,
-      { credentials: 'include' }
+    const res = await authFetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/forum/posts/author/${user.email}`
     );
     const data = await res.json();
     setPosts(data.data || []);
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchPosts();
-  }, [user]);
+  useEffect(() => { fetchPosts(); }, [user]);
 
   const handleDelete = async (id) => {
     if (!confirm('Delete this post?')) return;
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/forum/posts/${id}`, {
+    const res = await authFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/forum/posts/${id}`, {
       method: 'DELETE',
-      credentials: 'include',
     });
     const data = await res.json();
-
-    if (data.success) {
-      toast.success('Post deleted');
-      fetchPosts();
-    } else {
-      toast.error(data.message || 'Delete failed');
-    }
+    if (data.success) { toast.success('Post deleted'); fetchPosts(); }
+    else toast.error(data.message || 'Delete failed');
   };
 
   if (loading) return null;
@@ -53,18 +44,11 @@ export default function MyForumPostsPage() {
             <div className="p-4">
               <h3 className="font-semibold">{post.title}</h3>
               <p className="mt-1 line-clamp-2 text-sm text-gray-500">{post.description}</p>
-              <button
-                onClick={() => handleDelete(post._id)}
-                className="mt-3 rounded-lg bg-red-500 px-3 py-1 text-xs text-white"
-              >
-                Delete
-              </button>
+              <button onClick={() => handleDelete(post._id)} className="mt-3 rounded-lg bg-red-500 px-3 py-1 text-xs text-white">Delete</button>
             </div>
           </div>
         ))}
-        {posts.length === 0 && (
-          <p className="col-span-full text-center text-gray-400">No posts yet. Create your first post!</p>
-        )}
+        {posts.length === 0 && <p className="col-span-full text-center text-gray-400">No posts yet.</p>}
       </div>
     </div>
   );

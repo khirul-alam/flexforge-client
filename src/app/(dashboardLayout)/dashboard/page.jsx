@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRole } from '@/hooks/useRole';
+import { authFetch } from '@/utils/authFetch';
 import StatsCard from '@/components/dashboard/StatsCard';
 
 export default function DashboardOverviewPage() {
@@ -17,9 +18,7 @@ export default function DashboardOverviewPage() {
       else if (role === 'trainer') endpoint = `/api/stats/trainer/${user.email}`;
       else endpoint = `/api/stats/user/${user.email}`;
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
-        credentials: 'include',
-      });
+      const res = await authFetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`);
       const data = await res.json();
       setStats(data.data);
     };
@@ -30,7 +29,6 @@ export default function DashboardOverviewPage() {
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold">Dashboard Overview</h1>
-
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {role === 'user' && (
           <>
@@ -53,7 +51,6 @@ export default function DashboardOverviewPage() {
         )}
       </div>
 
-      {/* Profile + Role Badge + Trainer Application Status (only for 'user' role) */}
       <div className="mt-8 rounded-xl border bg-white p-6 shadow-sm">
         <div className="flex items-center gap-4">
           <img src={user?.image} alt={user?.name} className="h-16 w-16 rounded-full object-cover" />
@@ -65,20 +62,15 @@ export default function DashboardOverviewPage() {
             </span>
           </div>
         </div>
-
         {role === 'user' && user?.trainerApplicationStatus !== 'none' && (
           <div className="mt-4 rounded-lg bg-gray-50 p-4">
             <p className="text-sm font-medium">
               Trainer Application Status:{' '}
-              <span
-                className={`font-semibold ${
-                  user?.trainerApplicationStatus === 'approved'
-                    ? 'text-green-600'
-                    : user?.trainerApplicationStatus === 'rejected'
-                    ? 'text-red-600'
-                    : 'text-yellow-600'
-                }`}
-              >
+              <span className={`font-semibold ${
+                user?.trainerApplicationStatus === 'approved' ? 'text-green-600'
+                : user?.trainerApplicationStatus === 'rejected' ? 'text-red-600'
+                : 'text-yellow-600'
+              }`}>
                 {user?.trainerApplicationStatus}
               </span>
             </p>

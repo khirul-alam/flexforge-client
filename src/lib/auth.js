@@ -5,6 +5,10 @@ import { MongoClient } from 'mongodb';
 const client = new MongoClient(process.env.MONGODB_URI);
 
 export const auth = betterAuth({
+  secret: process.env.BETTER_AUTH_SECRET || 'flexforge_better_auth_secret_2026_xK9mP3nQ',
+
+  baseURL: process.env.BETTER_AUTH_URL || 'https://flexforge-client.vercel.app',
+
   database: mongodbAdapter(client.db(process.env.DB_NAME || 'flexforgeDB')),
 
   emailAndPassword: {

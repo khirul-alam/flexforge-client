@@ -44,15 +44,33 @@ export default function Navbar() {
       <div className="flex items-center gap-3">
         {user ? (
           <>
-            <img src={user.image} alt={user.name} className="h-9 w-9 rounded-full object-cover" />
-            <button onClick={handleLogout} className="rounded-lg border px-4 py-2">
+            <img
+              src={user.image}
+              alt={user.name}
+              className="h-9 w-9 rounded-full object-cover"
+            />
+            <button
+              onClick={handleLogout}
+              className="rounded-lg border px-4 py-2"
+            >
               Logout
             </button>
           </>
         ) : (
-          <Link href="/login" className="rounded-lg bg-orange-500 px-4 py-2 text-white">
-            Login
-          </Link>
+          <>
+            <Link
+              href="/login"
+              className="rounded-lg border px-4 py-2 font-medium hover:bg-gray-50"
+            >
+              Login
+            </Link>
+            <Link
+              href="/register"
+              className="rounded-lg bg-orange-500 px-4 py-2 font-medium text-white hover:bg-orange-600"
+            >
+              Register
+            </Link>
+          </>
         )}
       </div>
     </nav>

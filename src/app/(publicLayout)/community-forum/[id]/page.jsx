@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import { authFetch } from '@/utils/authFetch';
 import LikeDislikeButtons from '@/components/forum/LikeDislikeButtons';
 import CommentSection from '@/components/forum/CommentSection';
 
@@ -11,9 +12,7 @@ export default function ForumPostDetailsPage() {
 
   useEffect(() => {
     const fetchPost = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/forum/posts/${id}`, {
-        credentials: 'include',
-      });
+      const res = await authFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/forum/posts/${id}`);
       const data = await res.json();
       setPost(data.data);
     };
@@ -28,7 +27,6 @@ export default function ForumPostDetailsPage() {
       <h1 className="mt-6 text-3xl font-bold">{post.title}</h1>
       <p className="mt-1 text-sm text-gray-500">By {post.authorName}</p>
       <p className="mt-4">{post.description}</p>
-
       <LikeDislikeButtons post={post} />
       <CommentSection postId={post._id} />
     </div>

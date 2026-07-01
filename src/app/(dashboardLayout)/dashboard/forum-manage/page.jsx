@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { authFetch } from '@/utils/authFetch';
 import toast from 'react-hot-toast';
 
 export default function ForumManagePage() {
@@ -8,33 +9,24 @@ export default function ForumManagePage() {
   const [loading, setLoading] = useState(true);
 
   const fetchPosts = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/forum/posts?limit=100`, {
-      credentials: 'include',
-    });
+    const res = await authFetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/forum/posts?limit=100`
+    );
     const data = await res.json();
     setPosts(data.data || []);
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+  useEffect(() => { fetchPosts(); }, []);
 
   const handleDelete = async (id) => {
     if (!confirm('Delete this post?')) return;
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/forum/posts/${id}`, {
+    const res = await authFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/forum/posts/${id}`, {
       method: 'DELETE',
-      credentials: 'include',
     });
     const data = await res.json();
-
-    if (data.success) {
-      toast.success('Post deleted');
-      fetchPosts();
-    } else {
-      toast.error(data.message || 'Delete failed');
-    }
+    if (data.success) { toast.success('Post deleted'); fetchPosts(); }
+    else toast.error(data.message || 'Delete failed');
   };
 
   if (loading) return null;
@@ -56,22 +48,11 @@ export default function ForumManagePage() {
               <td className="p-3">{post.title}</td>
               <td className="p-3">{post.authorName}</td>
               <td className="p-3">
-                <button
-                  onClick={() => handleDelete(post._id)}
-                  className="rounded-lg bg-red-500 px-3 py-1 text-xs text-white"
-                >
-                  Delete
-                </button>
+                <button onClick={() => handleDelete(post._id)} className="rounded-lg bg-red-500 px-3 py-1 text-xs text-white">Delete</button>
               </td>
             </tr>
           ))}
-          {posts.length === 0 && (
-            <tr>
-              <td colSpan={3} className="p-6 text-center text-gray-400">
-                No posts found.
-              </td>
-            </tr>
-          )}
+          {posts.length === 0 && <tr><td colSpan={3} className="p-6 text-center text-gray-400">No posts found.</td></tr>}
         </tbody>
       </table>
     </div>

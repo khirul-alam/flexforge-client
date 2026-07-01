@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { authFetch } from '@/utils/authFetch';
 import ApplicantDetailsModal from '@/components/dashboard/ApplicantDetailsModal';
 
 export default function AppliedTrainersPage() {
@@ -9,17 +10,13 @@ export default function AppliedTrainersPage() {
   const [selectedApp, setSelectedApp] = useState(null);
 
   const fetchApplications = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/trainer-applications`, {
-      credentials: 'include',
-    });
+    const res = await authFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/trainer-applications`);
     const data = await res.json();
     setApplications(data.data || []);
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchApplications();
-  }, []);
+  useEffect(() => { fetchApplications(); }, []);
 
   if (loading) return null;
 
@@ -42,32 +39,14 @@ export default function AppliedTrainersPage() {
               <td className="p-3">{app.specialty}</td>
               <td className="p-3">{new Date(app.createdAt).toLocaleDateString()}</td>
               <td className="p-3">
-                <button
-                  onClick={() => setSelectedApp(app)}
-                  className="rounded-lg bg-orange-500 px-3 py-1 text-xs text-white"
-                >
-                  Details
-                </button>
+                <button onClick={() => setSelectedApp(app)} className="rounded-lg bg-orange-500 px-3 py-1 text-xs text-white">Details</button>
               </td>
             </tr>
           ))}
-          {applications.length === 0 && (
-            <tr>
-              <td colSpan={4} className="p-6 text-center text-gray-400">
-                No pending applications.
-              </td>
-            </tr>
-          )}
+          {applications.length === 0 && <tr><td colSpan={4} className="p-6 text-center text-gray-400">No pending applications.</td></tr>}
         </tbody>
       </table>
-
-      {selectedApp && (
-        <ApplicantDetailsModal
-          application={selectedApp}
-          onClose={() => setSelectedApp(null)}
-          onActionComplete={fetchApplications}
-        />
-      )}
+      {selectedApp && <ApplicantDetailsModal application={selectedApp} onClose={() => setSelectedApp(null)} onActionComplete={fetchApplications} />}
     </div>
   );
 }

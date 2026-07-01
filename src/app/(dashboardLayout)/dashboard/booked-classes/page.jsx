@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRole } from '@/hooks/useRole';
+import { authFetch } from '@/utils/authFetch';
 
 export default function BookedClassesPage() {
   const { user } = useRole();
@@ -12,9 +13,8 @@ export default function BookedClassesPage() {
   useEffect(() => {
     if (!user) return;
     const fetchBookings = async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/user/${user.email}`,
-        { credentials: 'include' }
+      const res = await authFetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/user/${user.email}`
       );
       const data = await res.json();
       setBookings(data.data || []);
@@ -43,9 +43,7 @@ export default function BookedClassesPage() {
               <td className="p-3">{booking.className}</td>
               <td className="p-3">{booking.trainerName}</td>
               <td className="p-3">
-                {typeof booking.schedule === 'string'
-                  ? booking.schedule
-                  : JSON.stringify(booking.schedule)}
+                {typeof booking.schedule === 'string' ? booking.schedule : JSON.stringify(booking.schedule)}
               </td>
               <td className="p-3">
                 <Link href={`/classes/${booking.classId}`} className="text-orange-500">
@@ -56,9 +54,7 @@ export default function BookedClassesPage() {
           ))}
           {bookings.length === 0 && (
             <tr>
-              <td colSpan={4} className="p-6 text-center text-gray-400">
-                No bookings yet.
-              </td>
+              <td colSpan={4} className="p-6 text-center text-gray-400">No bookings yet.</td>
             </tr>
           )}
         </tbody>

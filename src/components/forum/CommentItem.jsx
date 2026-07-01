@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRole } from '@/hooks/useRole';
+import { authFetch } from '@/utils/authFetch';
 
 export default function CommentItem({ comment, onUpdated }) {
   const { user } = useRole();
@@ -11,21 +12,23 @@ export default function CommentItem({ comment, onUpdated }) {
   const isOwner = user?.email === comment.userEmail;
 
   const handleUpdate = async () => {
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/forum/comments/${comment._id}`, {
-      method: 'PATCH',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, userEmail: user.email }),
-    });
+    await authFetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/forum/comments/${comment._id}`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, userEmail: user.email }),
+      }
+    );
     setEditing(false);
     onUpdated();
   };
 
   const handleDelete = async () => {
     if (!confirm('Delete this comment?')) return;
-    await fetch(
+    await authFetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/forum/comments/${comment._id}?userEmail=${user.email}`,
-      { method: 'DELETE', credentials: 'include' }
+      { method: 'DELETE' }
     );
     onUpdated();
   };

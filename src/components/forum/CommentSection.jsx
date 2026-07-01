@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRole } from '@/hooks/useRole';
+import { authFetch } from '@/utils/authFetch';
 import CommentItem from './CommentItem';
 
 export default function CommentSection({ postId }) {
@@ -10,9 +11,9 @@ export default function CommentSection({ postId }) {
   const [text, setText] = useState('');
 
   const fetchComments = async () => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/forum/comments/${postId}`, {
-      credentials: 'include',
-    });
+    const res = await authFetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/forum/comments/${postId}`
+    );
     const data = await res.json();
     setComments(data.data || []);
   };
@@ -25,9 +26,8 @@ export default function CommentSection({ postId }) {
     e.preventDefault();
     if (!text.trim()) return;
 
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/forum/comments`, {
+    await authFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/forum/comments`, {
       method: 'POST',
-      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         postId,

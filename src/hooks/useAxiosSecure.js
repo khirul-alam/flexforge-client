@@ -1,9 +1,18 @@
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { getMemoryToken } from '@/providers/AuthProvider';
 
 const axiosSecure = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
+});
+
+axiosSecure.interceptors.request.use((config) => {
+  const token = getMemoryToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export function useAxiosSecure() {

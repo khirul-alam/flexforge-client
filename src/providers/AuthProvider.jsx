@@ -1,9 +1,16 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { useSession } from '@/lib/auth-client';
 
 const AuthContext = createContext(null);
+
+// In-memory token storage (not localStorage - more secure)
+let memoryToken = null;
+
+export function getMemoryToken() {
+  return memoryToken;
+}
 
 export function AuthProvider({ children }) {
   const { data: session, isPending } = useSession();
@@ -13,11 +20,12 @@ export function AuthProvider({ children }) {
     const syncUser = async () => {
       if (!session?.user) {
         setAppUser(null);
+        memoryToken = null;
         return;
       }
 
       try {
-        // 1. Ensure user document exists on Express server
+        // 1. Ensure user document exists
         await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -28,21 +36,28 @@ export function AuthProvider({ children }) {
           }),
         });
 
-        // 2. Issue JWT cookie
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/jwt`, {
+        // 2. Issue JWT — get token from response body
+        const jwtRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/jwt`, {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: session.user.email }),
         });
+        const jwtData = await jwtRes.json();
 
-        // 3. Small delay to ensure cookie is set before next request
-        await new Promise((resolve) => setTimeout(resolve, 300));
+        if (jwtData.token) {
+          memoryToken = jwtData.token;
+        }
 
-        // 4. Fetch full user doc with role
+        // 3. Fetch full user doc with role
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/users/${session.user.email}`,
-          { credentials: 'include' }
+          {
+            credentials: 'include',
+            headers: {
+              'Authorization': `Bearer ${memoryToken}`,
+            },
+          }
         );
         const data = await res.json();
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRole } from '@/hooks/useRole';
+import { authFetch } from '@/utils/authFetch';
 import toast from 'react-hot-toast';
 
 export default function BookNowButton({ classData }) {
@@ -13,9 +14,8 @@ export default function BookNowButton({ classData }) {
   useEffect(() => {
     if (!user) return;
     const checkBooking = async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/check?classId=${classData._id}&userEmail=${user.email}`,
-        { credentials: 'include' }
+      const res = await authFetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/bookings/check?classId=${classData._id}&userEmail=${user.email}`
       );
       const data = await res.json();
       setAlreadyBooked(data.data?.alreadyBooked);
@@ -28,12 +28,10 @@ export default function BookNowButton({ classData }) {
       toast.error('You have already booked this class');
       return;
     }
-
     if (user?.status === 'blocked') {
       toast.error('Action restricted by Admin');
       return;
     }
-
     router.push(`/payment/${classData._id}`);
   };
 

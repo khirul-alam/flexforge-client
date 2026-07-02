@@ -104,12 +104,8 @@ export default function Sidebar() {
 
   return (
     <aside className="flex w-64 shrink-0 flex-col border-r bg-white p-4">
-      {/* লোগো - শুধু একবার */}
-      <div className="mb-8">
-        <Link href="/" className="block text-2xl font-bold text-orange-500">
-          FlexForge
-        </Link>
-      </div>
+      {/* FlexForge টেক্সট সরিয়ে দেওয়া হয়েছে */}
+      <div className="mb-8 h-8"></div>
 
       <nav className="flex flex-1 flex-col gap-1">
         {links.map((link) => {
@@ -119,8 +115,8 @@ export default function Sidebar() {
               key={link.href}
               href={link.href}
               className={`flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-all ${
-                isActive 
-                  ? 'bg-orange-500 text-white' 
+                isActive
+                  ? 'bg-orange-500 text-white shadow-sm'
                   : 'hover:bg-orange-50 text-gray-700'
               }`}
             >

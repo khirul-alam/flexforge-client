@@ -30,36 +30,66 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="flex items-center justify-between px-6 py-4 shadow-sm">
-      <Link href="/" className="text-xl font-bold text-orange-500">
-        FlexForge
-      </Link>
+    <nav className="sticky top-0 z-50 bg-gradient-to-r from-orange-600 via-orange-700 to-orange-800 shadow-xl shadow-orange-950/50">
+      <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="flex items-center justify-between">
+          
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-9 h-9 bg-white rounded-2xl flex items-center justify-center shadow-inner transition-transform group-hover:scale-110">
+              <span className="text-orange-600 font-bold text-3xl">F</span>
+            </div>
+            <span className="text-3xl font-bold text-white tracking-tighter">FlexForge</span>
+          </Link>
 
-      <div className="hidden gap-6 md:flex">
-        <Link href="/">Home</Link>
-        <Link href="/all-classes">All Classes</Link>
-        <Link href="/community-forum">Community Forum</Link>
-        {user && <Link href="/dashboard">Dashboard</Link>}
-      </div>
+          {/* Menu Links */}
+          <div className="hidden md:flex items-center gap-8 text-white">
+            <Link href="/" className="hover:text-orange-200 transition-colors duration-200 font-medium">Home</Link>
+            <Link href="/all-classes" className="hover:text-orange-200 transition-colors duration-200 font-medium">All Classes</Link>
+            <Link href="/community-forum" className="hover:text-orange-200 transition-colors duration-200 font-medium">Community Forum</Link>
+            {user && (
+              <Link href="/dashboard" className="hover:text-orange-200 transition-colors duration-200 font-medium">Dashboard</Link>
+            )}
+          </div>
 
-      <div className="flex items-center gap-3">
-        {user ? (
-          <>
-            <img src={user.image} alt={user.name} className="h-9 w-9 rounded-full object-cover" />
-            <button onClick={handleLogout} className="rounded-lg border px-4 py-2">
-              Logout
-            </button>
-          </>
-        ) : (
-          <>
-            <Link href="/login" className="rounded-lg border px-4 py-2 font-medium hover:bg-gray-50">
-              Login
-            </Link>
-            <Link href="/register" className="rounded-lg bg-orange-500 px-4 py-2 font-medium text-white hover:bg-orange-600">
-              Register
-            </Link>
-          </>
-        )}
+          {/* Right Side */}
+          <div className="flex items-center gap-4">
+            {user ? (
+              <>
+                <div className="flex items-center gap-3">
+                  <img 
+                    src={user.image} 
+                    alt={user.name} 
+                    className="h-9 w-9 rounded-full object-cover ring-2 ring-white/30" 
+                  />
+                  <span className="hidden md:block text-white font-medium">{user.name}</span>
+                </div>
+                
+                <button 
+                  onClick={handleLogout} 
+                  className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-2.5 rounded-2xl font-medium transition-all duration-300 hover:scale-105 active:scale-95 border border-white/20"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link 
+                  href="/login" 
+                  className="px-6 py-2.5 text-white font-medium hover:bg-white/10 rounded-2xl transition-all duration-300 border border-white/20"
+                >
+                  Login
+                </Link>
+                <Link 
+                  href="/register" 
+                  className="bg-white text-orange-700 hover:bg-orange-50 px-6 py-2.5 font-semibold rounded-2xl transition-all duration-300 hover:scale-105 active:scale-95 shadow-md"
+                >
+                  Register
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
       </div>
     </nav>
   );

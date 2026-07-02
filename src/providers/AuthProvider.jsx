@@ -1,16 +1,10 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, useRef } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useSession } from '@/lib/auth-client';
+import { setToken, clearToken, getToken } from '@/utils/tokenStore';
 
 const AuthContext = createContext(null);
-
-// In-memory token storage (not localStorage - more secure)
-let memoryToken = null;
-
-export function getMemoryToken() {
-  return memoryToken;
-}
 
 export function AuthProvider({ children }) {
   const { data: session, isPending } = useSession();
@@ -20,7 +14,7 @@ export function AuthProvider({ children }) {
     const syncUser = async () => {
       if (!session?.user) {
         setAppUser(null);
-        memoryToken = null;
+        clearToken();
         return;
       }
 
@@ -46,16 +40,18 @@ export function AuthProvider({ children }) {
         const jwtData = await jwtRes.json();
 
         if (jwtData.token) {
-          memoryToken = jwtData.token;
+          setToken(jwtData.token);
         }
 
-        // 3. Fetch full user doc with role
+        // 3. Fetch full user doc with role using token directly
+        const token = getToken();
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/users/${session.user.email}`,
           {
             credentials: 'include',
             headers: {
-              'Authorization': `Bearer ${memoryToken}`,
+              'Content-Type': 'application/json',
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
             },
           }
         );

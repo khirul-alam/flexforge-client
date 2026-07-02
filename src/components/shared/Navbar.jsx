@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRole } from '@/hooks/useRole';
 import { signOut } from '@/lib/auth-client';
+import { clearToken } from '@/utils/tokenStore';
 import toast from 'react-hot-toast';
 
 export default function Navbar() {
@@ -12,6 +13,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
+      clearToken();
       await signOut();
 
       await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
@@ -24,7 +26,6 @@ export default function Navbar() {
       router.refresh();
     } catch (error) {
       toast.error('Logout failed. Please try again.');
-      console.error('Logout error:', error);
     }
   };
 
@@ -44,30 +45,17 @@ export default function Navbar() {
       <div className="flex items-center gap-3">
         {user ? (
           <>
-            <img
-              src={user.image}
-              alt={user.name}
-              className="h-9 w-9 rounded-full object-cover"
-            />
-            <button
-              onClick={handleLogout}
-              className="rounded-lg border px-4 py-2"
-            >
+            <img src={user.image} alt={user.name} className="h-9 w-9 rounded-full object-cover" />
+            <button onClick={handleLogout} className="rounded-lg border px-4 py-2">
               Logout
             </button>
           </>
         ) : (
           <>
-            <Link
-              href="/login"
-              className="rounded-lg border px-4 py-2 font-medium hover:bg-gray-50"
-            >
+            <Link href="/login" className="rounded-lg border px-4 py-2 font-medium hover:bg-gray-50">
               Login
             </Link>
-            <Link
-              href="/register"
-              className="rounded-lg bg-orange-500 px-4 py-2 font-medium text-white hover:bg-orange-600"
-            >
+            <Link href="/register" className="rounded-lg bg-orange-500 px-4 py-2 font-medium text-white hover:bg-orange-600">
               Register
             </Link>
           </>

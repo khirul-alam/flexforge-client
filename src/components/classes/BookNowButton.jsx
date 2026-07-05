@@ -40,7 +40,7 @@ export default function BookNowButton({ classData }) {
       onClick={handleClick}
       disabled={alreadyBooked}
       className={`rounded-lg px-6 py-3 font-semibold text-white ${
-        alreadyBooked ? 'cursor-not-allowed bg-gray-400' : 'bg-orange-500'
+        alreadyBooked ? 'cursor-not-allowed bg-gray-400' : 'bg-orange-500 cursor-pointer'
       }`}
     >
       {alreadyBooked ? 'Already Booked' : 'Book Now'}

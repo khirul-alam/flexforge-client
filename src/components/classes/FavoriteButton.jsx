@@ -50,7 +50,7 @@ export default function FavoriteButton({ classData }) {
       onClick={handleClick}
       disabled={isFavorited}
       className={`rounded-lg border px-6 py-3 font-semibold ${
-        isFavorited ? 'cursor-not-allowed text-gray-400' : 'text-orange-500'
+        isFavorited ? 'cursor-not-allowed text-gray-400' : 'text-orange-500 cursor-pointer'
       }`}
     >
       {isFavorited ? 'Saved to Favorites' : 'Add to Favorites'}

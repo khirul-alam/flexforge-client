@@ -74,7 +74,7 @@ export default function Navbar() {
                   <img 
                     src={user.image} 
                     alt={user.name} 
-                    className="h-9 w-9 rounded-full object-cover ring-2 ring-white/50" 
+                    className="h-9 w-9 rounded-full object-cover ring-2 ring-white/50 cursor-pointer" 
                   />
                   <span className="hidden md:block text-white font-medium">
                     {user.name || user.email?.split('@')[0]}

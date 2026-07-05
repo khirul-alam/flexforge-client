@@ -30,7 +30,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-orange-600 to-orange-700 shadow-lg shadow-orange-800/50 sticky top-0 z-50">
+    <nav className="bg-linear-to-r from-orange-600 to-orange-700 shadow-lg shadow-orange-800/50 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           
@@ -54,16 +54,16 @@ export default function Navbar() {
                   <img 
                     src={user.image} 
                     alt={user.name} 
-                    className="h-9 w-9 rounded-full object-cover ring-2 ring-white/50" 
+                    className="h-9 w-9 rounded-full object-cover ring-2 ring-white/50 cursor-pointer" 
                   />
-                  <span className="hidden md:block text-white font-medium">
+                  <span className="hidden md:block text-white font-medium cursor-pointer">
                     {user.name || user.email?.split('@')[0]}
                   </span>
                 </div>
 
                 <button 
                   onClick={handleLogout} 
-                  className="rounded-xl border border-white/30 bg-white/10 px-5 py-2 text-white font-medium hover:bg-white/20 transition-all"
+                  className="rounded-xl border border-white/30 bg-white/10 px-5 py-2 text-white font-medium hover:bg-white/20 transition-all cursor-pointer"
                 >
                   Logout
                 </button>
@@ -72,13 +72,13 @@ export default function Navbar() {
               <>
                 <Link 
                   href="/login" 
-                  className="text-white font-medium px-5 py-2 rounded-xl hover:bg-white/10 transition-all"
+                  className="text-white font-medium px-5 py-2 rounded-xl hover:bg-white/10 transition-all cursor-pointer"
                 >
                   Login
                 </Link>
                 <Link 
                   href="/register" 
-                  className="bg-white text-orange-600 font-semibold px-5 py-2 rounded-xl hover:bg-orange-50 transition-all"
+                  className="bg-white text-orange-600 font-semibold px-5 py-2 rounded-xl hover:bg-orange-50 transition-all cursor-pointer"
                 >
                   Register
                 </Link>

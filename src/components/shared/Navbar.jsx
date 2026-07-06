@@ -36,8 +36,18 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           
-          {/* Logo */}
-          <Link href="/" className="text-2xl font-bold text-white">FlexForge</Link>
+          {/* Left Side: Logo + Mobile Menu Button */}
+          <div className="flex items-center gap-4">
+            <Link href="/" className="text-2xl font-bold text-white">FlexForge</Link>
+            
+            {/* Mobile Hamburger - Left side of logo */}
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden text-white p-1"
+            >
+              {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+          </div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8 text-white font-medium">
@@ -107,14 +117,6 @@ export default function Navbar() {
                 </Link>
               </>
             )}
-
-            {/* Mobile Menu Button */}
-            <button 
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden text-white p-1"
-            >
-              {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
-            </button>
           </div>
         </div>
 

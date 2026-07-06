@@ -6,10 +6,13 @@ import { useRole } from '@/hooks/useRole';
 import { signOut } from '@/lib/auth-client';
 import { clearToken } from '@/utils/tokenStore';
 import toast from 'react-hot-toast';
+import { useState } from 'react';
+import { Menu, X } from 'lucide-react';
 
 export default function Navbar() {
   const { user } = useRole();
   const pathname = usePathname();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -36,7 +39,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold text-white">FlexForge</Link>
 
-          {/* Menu Links with Active State */}
+          {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8 text-white font-medium">
             <Link 
               href="/" 
@@ -74,7 +77,7 @@ export default function Navbar() {
                   <img 
                     src={user.image} 
                     alt={user.name} 
-                    className="h-9 w-9 rounded-full object-cover ring-2 ring-white/50 cursor-pointer" 
+                    className="h-9 w-9 rounded-full object-cover ring-2 ring-white/50" 
                   />
                   <span className="hidden md:block text-white font-medium">
                     {user.name || user.email?.split('@')[0]}
@@ -92,20 +95,47 @@ export default function Navbar() {
               <>
                 <Link 
                   href="/login" 
-                  className="cursor-pointer text-white font-medium px-5 py-2 rounded-xl hover:bg-white/10 transition-all"
+                  className="cursor-pointer text-white font-medium px-5 py-2 rounded-xl hover:bg-white/10 transition-all hidden md:block"
                 >
                   Login
                 </Link>
                 <Link 
                   href="/register" 
-                  className="cursor-pointer bg-white text-orange-600 font-semibold px-5 py-2 rounded-xl hover:bg-orange-50 transition-all"
+                  className="cursor-pointer bg-white text-orange-600 font-semibold px-5 py-2 rounded-xl hover:bg-orange-50 transition-all hidden md:block"
                 >
                   Register
                 </Link>
               </>
             )}
+
+            {/* Mobile Menu Button */}
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden text-white p-1"
+            >
+              {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden mt-4 pt-4 border-t border-white/20">
+            <div className="flex flex-col gap-4 text-white font-medium py-2">
+              <Link href="/" onClick={() => setIsMenuOpen(false)} className="py-2">Home</Link>
+              <Link href="/all-classes" onClick={() => setIsMenuOpen(false)} className="py-2">All Classes</Link>
+              <Link href="/community-forum" onClick={() => setIsMenuOpen(false)} className="py-2">Community Forum</Link>
+              {user && <Link href="/dashboard" onClick={() => setIsMenuOpen(false)} className="py-2">Dashboard</Link>}
+              
+              {!user && (
+                <>
+                  <Link href="/login" onClick={() => setIsMenuOpen(false)} className="py-2">Login</Link>
+                  <Link href="/register" onClick={() => setIsMenuOpen(false)} className="py-2">Register</Link>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );

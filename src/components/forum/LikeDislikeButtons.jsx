@@ -1,3 +1,47 @@
+// 'use client';
+
+// import { useState } from 'react';
+// import { useRole } from '@/hooks/useRole';
+// import { authFetch } from '@/utils/authFetch';
+
+// export default function LikeDislikeButtons({ post }) {
+//   const { user } = useRole();
+//   const [likes, setLikes] = useState(post.likes || []);
+//   const [dislikes, setDislikes] = useState(post.dislikes || []);
+
+//   const vote = async (voteType) => {
+//     if (!user) return;
+
+//     await authFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/forum/posts/${post._id}/vote`, {
+//       method: 'PATCH',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify({ userEmail: user.email, voteType }),
+//     });
+
+//     if (voteType === 'like') {
+//       setLikes((prev) =>
+//         prev.includes(user.email) ? prev.filter((e) => e !== user.email) : [...prev, user.email]
+//       );
+//       setDislikes((prev) => prev.filter((e) => e !== user.email));
+//     } else {
+//       setDislikes((prev) =>
+//         prev.includes(user.email) ? prev.filter((e) => e !== user.email) : [...prev, user.email]
+//       );
+//       setLikes((prev) => prev.filter((e) => e !== user.email));
+//     }
+//   };
+
+//   return (
+//     <div className="mt-4 flex gap-4">
+//       <button onClick={() => vote('like')} className="rounded-lg border px-4 py-2">
+//         👍 {likes.length}
+//       </button>
+//       <button onClick={() => vote('dislike')} className="rounded-lg border px-4 py-2">
+//         👎 {dislikes.length}
+//       </button>
+//     </div>
+//   );
+// }
 'use client';
 
 import { useState } from 'react';
@@ -8,35 +52,68 @@ export default function LikeDislikeButtons({ post }) {
   const { user } = useRole();
   const [likes, setLikes] = useState(post.likes || []);
   const [dislikes, setDislikes] = useState(post.dislikes || []);
+  const [isLoading, setIsLoading] = useState(false);
 
   const vote = async (voteType) => {
-    if (!user) return;
+    if (!user || isLoading) return;
 
-    await authFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/forum/posts/${post._id}/vote`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userEmail: user.email, voteType }),
-    });
+    setIsLoading(true);
 
-    if (voteType === 'like') {
-      setLikes((prev) =>
-        prev.includes(user.email) ? prev.filter((e) => e !== user.email) : [...prev, user.email]
-      );
-      setDislikes((prev) => prev.filter((e) => e !== user.email));
-    } else {
-      setDislikes((prev) =>
-        prev.includes(user.email) ? prev.filter((e) => e !== user.email) : [...prev, user.email]
-      );
-      setLikes((prev) => prev.filter((e) => e !== user.email));
+    try {
+      await authFetch(`${process.env.NEXT_PUBLIC_API_URL}/api/forum/posts/${post._id}/vote`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userEmail: user.email, voteType }),
+      });
+
+      if (voteType === 'like') {
+        setLikes((prev) =>
+          prev.includes(user.email)
+            ? prev.filter((e) => e !== user.email)
+            : [...prev, user.email]
+        );
+        setDislikes((prev) => prev.filter((e) => e !== user.email));
+      } else {
+        setDislikes((prev) =>
+          prev.includes(user.email)
+            ? prev.filter((e) => e !== user.email)
+            : [...prev, user.email]
+        );
+        setLikes((prev) => prev.filter((e) => e !== user.email));
+      }
+    } catch (error) {
+      console.error('Vote error:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  const hasLiked = user && likes.includes(user.email);
+  const hasDisliked = user && dislikes.includes(user.email);
+
   return (
     <div className="mt-4 flex gap-4">
-      <button onClick={() => vote('like')} className="rounded-lg border px-4 py-2">
+      <button
+        onClick={() => vote('like')}
+        disabled={isLoading}
+        className={`rounded-lg border px-4 py-2 transition-all ${
+          hasLiked 
+            ? 'bg-green-500 text-white border-green-600 shadow-md scale-105' 
+            : 'hover:bg-gray-100'
+        }`}
+      >
         👍 {likes.length}
       </button>
-      <button onClick={() => vote('dislike')} className="rounded-lg border px-4 py-2">
+
+      <button
+        onClick={() => vote('dislike')}
+        disabled={isLoading}
+        className={`rounded-lg border px-4 py-2 transition-all ${
+          hasDisliked 
+            ? 'bg-red-500 text-white border-red-600 shadow-md scale-105' 
+            : 'hover:bg-gray-100'
+        }`}
+      >
         👎 {dislikes.length}
       </button>
     </div>

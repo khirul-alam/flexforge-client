@@ -12,8 +12,8 @@ https://flexforge-client.vercel.app
 
 ## Admin Credentials (For Testing)
 
-- **Admin Email:** admin@flexforge.com
-- **Admin Password:** (তোমার আসল admin password বসাও)
+- **Admin Email:** khairulalam1700@gmail.com
+- **Admin Password:** Y123456789y
 
 ## Key Features
 

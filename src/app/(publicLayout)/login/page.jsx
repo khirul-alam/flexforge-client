@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Eye, EyeOff } from 'lucide-react';
 import { signIn } from '@/lib/auth-client';
@@ -9,6 +9,9 @@ import toast from 'react-hot-toast';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirect') || '/';
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -23,11 +26,11 @@ export default function LoginPage() {
     }
 
     toast.success('Logged in successfully!');
-    router.push('/');
+    router.push(redirectTo);
   };
 
   const handleGoogleLogin = async () => {
-    await signIn.social({ provider: 'google', callbackURL: '/' });
+    await signIn.social({ provider: 'google', callbackURL: redirectTo });
   };
 
   return (
@@ -63,12 +66,18 @@ export default function LoginPage() {
           </button>
         </div>
 
-        <button type="submit" className="rounded-lg bg-orange-500 py-3 font-semibold text-white cursor-pointer">
+        <button
+          type="submit"
+          className="rounded-lg bg-orange-500 py-3 font-semibold text-white"
+        >
           Login
         </button>
       </form>
 
-      <button onClick={handleGoogleLogin} className="mt-4 rounded-lg border py-3 font-semibold cursor-pointer">
+      <button
+        onClick={handleGoogleLogin}
+        className="mt-4 rounded-lg border py-3 font-semibold"
+      >
         Continue with Google
       </button>
 

@@ -49,7 +49,7 @@ https://flexforge-client.vercel.app
 
 ```bash
 npm install
-cp .env.example .env.local   # fill in your credentials
+cp .env.example .env.local   
 npm run dev
 ```
 
